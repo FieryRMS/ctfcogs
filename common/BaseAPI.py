@@ -17,7 +17,7 @@ TSession = TypeVar("TSession", bound=Session)
 TChallenge = TypeVar("TChallenge", bound=Challenge)
 
 
-class Platform(ABC, Generic[TChallenge, TSession]):
+class BaseAPI(ABC, Generic[TChallenge, TSession]):
     """Base class API wrapper for ctf platforms"""
 
     @abstractmethod
