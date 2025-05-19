@@ -1,0 +1,166 @@
+from abc import ABC, abstractmethod
+from typing import Generic, Optional, TypedDict, TypeVar, overload
+
+
+class Challenge(TypedDict):
+    id: str
+    name: str
+    is_solved: bool
+    description: Optional[str]
+
+
+class Session(TypedDict):
+    pass
+
+
+TSession = TypeVar("TSession", bound=Session)
+TChallenge = TypeVar("TChallenge", bound=Challenge)
+
+
+class Platform(ABC, Generic[TChallenge, TSession]):
+    """Base class API wrapper for ctf platforms"""
+
+    @abstractmethod
+    @classmethod
+    def verify(cls, link: str) -> bool:
+        """
+        Verify this is the appropriate platform class for the given link
+
+        Parameters
+        ----------
+        link: str
+            The link to the platform to verify
+
+        Returns
+        -------
+        bool
+            True if this is the appropriate platform class for the given link
+        """
+
+    @overload
+    @classmethod
+    def login(cls, *, uname: str, pwd: str) -> TSession: ...
+
+    @overload
+    @classmethod
+    def login(cls, *, token: str) -> TSession: ...
+
+    @abstractmethod
+    @classmethod
+    def login(
+        cls, *, uname: Optional[str] = None, pwd: Optional[str] = None, token: Optional[str] = None
+    ) -> TSession:
+        """
+        Login to the platform
+
+        Parameters
+        ----------
+        uname: str
+            The username to login with
+        pwd: str
+            The password to login with
+        token: str
+            The token to login with
+
+        Returns
+        -------
+        TSession
+            The session object for the platform
+        """
+
+    @abstractmethod
+    @classmethod
+    def logout(cls, session: TSession) -> None:
+        """
+        Logout of the platform
+
+        Parameters
+        ----------
+        session: TSession
+            The session object to logout
+        """
+
+    @abstractmethod
+    @classmethod
+    def get_challenges(cls, session: TSession) -> list[TChallenge]:
+        """
+        Get the challenges for this platform
+
+        Parameters
+        ----------
+        session: TSession
+            The session object to use for the request
+
+        Returns
+        -------
+        list[TChallenge]
+            A list of challenges for this platform
+        """
+
+    @abstractmethod
+    @classmethod
+    def get_challenge(cls, id: str, session: TSession) -> TChallenge:
+        """
+        Get a specific challenge for this platform
+
+        Parameters
+        ----------
+        id: str
+            The id of the challenge to get
+        session: TSession
+            The session object to use for the request
+
+        Returns
+        -------
+        TChallenge
+            The challenge for this platform
+        """
+
+    @abstractmethod
+    @classmethod
+    def submit_flag(cls, session: TSession, challenge: TChallenge, flag: str) -> bool:
+        """
+        Submit a flag for a specific challenge
+
+        Parameters
+        ----------
+        session: TSession
+            The session object to use for the submission
+        challenge: TChallenge
+            The challenge to submit the flag for
+        flag: str
+            The flag to submit
+
+        Returns
+        -------
+        bool
+            True if the flag was accepted, False otherwise
+        """
+
+    @abstractmethod
+    @classmethod
+    def submit_flags(
+        cls, session: TSession, challenges: list[TChallenge], flags: list[str]
+    ) -> list[bool]:
+        """
+        Submit multiple flags for multiple challenges
+
+        Parameters
+        ----------
+        session: TSession
+            The session object to use for the submission
+        challenges: list[TChallenge]
+            The challenges to submit the flags for
+        flags: list[str]
+            The flags to submit
+
+        Returns
+        -------
+        list[bool]
+            A list of booleans indicating if the flag was accepted for each challenge
+
+        Raises
+        ------
+        ValueError
+            If the number of challenges and flags do not match
+        """
