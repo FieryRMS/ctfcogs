@@ -5,8 +5,8 @@ description = "a collection of CTF related cogs for Red-DiscordBot"
 authors = [{ name = "FieryRMS", email = "raiyanmohdshahrms@gmail.com" }]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = "<3.12,>=3.8.1"
-dependencies = ["red-discordbot (>=3.5.20,<4.0.0)"]
+requires-python = "<3.12,>=3.9"
+dependencies = ["red-discordbot (>=3.5.20,<4.0.0)", "pydantic (>=2.11.4,<3.0.0)"]
 
 
 [build-system]

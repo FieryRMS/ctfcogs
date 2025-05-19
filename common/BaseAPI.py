@@ -1,20 +1,24 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, TypedDict, TypeVar, overload
+from typing import Generic, Optional, TypeVar, overload
+
+from pydantic import BaseModel, ConfigDict
 
 
-class Challenge(TypedDict):
+class Challenge(BaseModel):
     id: str
     name: str
     is_solved: bool
     description: Optional[str]
 
-
-class Session(TypedDict):
-    pass
+    model_config = ConfigDict(extra="allow")
 
 
-TSession = TypeVar("TSession", bound=Session)
-TChallenge = TypeVar("TChallenge", bound=Challenge)
+class Session(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+TSession = TypeVar("TSession", bound=Session, covariant=True)
+TChallenge = TypeVar("TChallenge", bound=Challenge, covariant=True)
 
 
 class BaseAPI(ABC, Generic[TChallenge, TSession]):
@@ -70,25 +74,25 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
 
     @abstractmethod
     @classmethod
-    def logout(cls, session: TSession) -> None:
+    def logout(cls, session: Session) -> None:
         """
         Logout of the platform
 
         Parameters
         ----------
-        session: TSession
+        session: Session
             The session object to logout
         """
 
     @abstractmethod
     @classmethod
-    def get_challenges(cls, session: TSession) -> list[TChallenge]:
+    def get_challenges(cls, session: Session) -> list[TChallenge]:
         """
         Get the challenges for this platform
 
         Parameters
         ----------
-        session: TSession
+        session: Session
             The session object to use for the request
 
         Returns
@@ -99,7 +103,7 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
 
     @abstractmethod
     @classmethod
-    def get_challenge(cls, id: str, session: TSession) -> TChallenge:
+    def get_challenge(cls, id: str, session: Session) -> TChallenge:
         """
         Get a specific challenge for this platform
 
@@ -107,7 +111,7 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
         ----------
         id: str
             The id of the challenge to get
-        session: TSession
+        session: Session
             The session object to use for the request
 
         Returns
@@ -118,15 +122,15 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
 
     @abstractmethod
     @classmethod
-    def submit_flag(cls, session: TSession, challenge: TChallenge, flag: str) -> bool:
+    def submit_flag(cls, session: Session, challenge: Challenge, flag: str) -> bool:
         """
         Submit a flag for a specific challenge
 
         Parameters
         ----------
-        session: TSession
+        session: Session
             The session object to use for the submission
-        challenge: TChallenge
+        challenge: Challenge
             The challenge to submit the flag for
         flag: str
             The flag to submit
@@ -140,16 +144,16 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
     @abstractmethod
     @classmethod
     def submit_flags(
-        cls, session: TSession, challenges: list[TChallenge], flags: list[str]
+        cls, session: Session, challenges: list[Challenge], flags: list[str]
     ) -> list[bool]:
         """
         Submit multiple flags for multiple challenges
 
         Parameters
         ----------
-        session: TSession
+        session: Session
             The session object to use for the submission
-        challenges: list[TChallenge]
+        challenges: list[Challenge]
             The challenges to submit the flags for
         flags: list[str]
             The flags to submit
