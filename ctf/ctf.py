@@ -1,7 +1,7 @@
 from redbot.core import commands
 
 
-class Integrations(commands.Cog, name="ctfcogs.Integrations"):
+class CTF(commands.Cog, name="ctfcogs.CTF"):
     """
     Commands that combine multiple cogs features together
     """
