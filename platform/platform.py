@@ -19,7 +19,10 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         """
         Manage CTF Platforms
 
-        Commands automatically identify the platform type if not already done
+        | Commands automatically identify the platform type if not already done.
+        | It will also attempt to login if no session is found.
+        | Credentials are bound and retrived by key=(url, channel).
+        | Sessions are bound and retrived by key=(url, channel).
         """
         pass
 
@@ -74,7 +77,6 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     ) -> None:
         """
         Save credentials for a given platform
-        Credentials are bound by key=(url, channel)
 
         Parameters
         ----------
@@ -112,8 +114,8 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     ) -> None:
         """
         Login to the platform and save the session
+
         If parameters are misssing, saved credentials will be used
-        Sessions are bound by key=(url, channel)
 
         Parameters
         ----------
@@ -132,7 +134,6 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     async def logout(self, ctx: commands.Context, *, url: OptStr = None) -> None:
         """
         Logout of the platform and delete the session
-        Sessions are bound by key=(url, channel)
 
         Parameters
         ----------
@@ -145,7 +146,6 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     async def delete(self, ctx: commands.Context, *, url: OptStr = None) -> None:
         """
         Delete the platform and all associated data
-        Sessions are bound by key=(url, channel)
 
         Parameters
         ----------
@@ -166,9 +166,8 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     ) -> None:
         r"""
         List and save challenges for a given platform
-        Sessions are retrived by by key=(url, channel)
-        Challenge data is saved by the same key
-        It will attempt to login if no session is found
+
+        Challenge data is saved by the same key as the session
 
         Parameters
         ----------
@@ -195,6 +194,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         url: str, optional
             The URL of the platform to list challenges for.
         """
+        # do not overwrite the flag field
         raise NotImplementedError()
 
     @platform.command()
@@ -208,9 +208,8 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     ) -> None:
         """
         Submit a flag for a given challenge
-        Sessions are retrived by by key=(url, channel)
+
         Challenges are retrived if not already saved
-        It will attempt to login if no session is found
 
         Parameters
         ----------
@@ -229,12 +228,12 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     async def submit(self, ctx: commands.Context, *, url: OptStr = None) -> None:
         """
         Submit any saved flags for a given platform
-        Sessions are retrived by by key=(url, channel)
+
         This command is only usedful if hoarding flags
-        It will attempt to login if no session is found
 
         Parameters
         ----------
         url: str, optional
             The URL of the platform to submit the flag to.
         """
+        raise NotImplementedError()
