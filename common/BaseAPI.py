@@ -1,15 +1,18 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, overload
+from typing import Generic, overload
 
 from pydantic import BaseModel, ConfigDict
 from typing_extensions import TypeVar
+
+from common.types import OptStr
 
 
 class Challenge(BaseModel):
     id: str
     name: str
     is_solved: bool
-    description: Optional[str]
+    description: OptStr
+    flag: OptStr
 
     model_config = ConfigDict(extra="allow")
 
@@ -52,9 +55,7 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
 
     @abstractmethod
     @classmethod
-    def login(
-        cls, *, uname: Optional[str] = None, pwd: Optional[str] = None, token: Optional[str] = None
-    ) -> TSession:
+    def login(cls, *, uname: OptStr = None, pwd: OptStr = None, token: OptStr = None) -> TSession:
         """
         Login to the platform
 
