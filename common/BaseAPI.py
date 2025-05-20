@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, TypeVar, overload
+from typing import Generic, Optional, overload
 
 from pydantic import BaseModel, ConfigDict
+from typing_extensions import TypeVar
 
 
 class Challenge(BaseModel):
@@ -17,8 +18,8 @@ class Session(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-TSession = TypeVar("TSession", bound=Session, covariant=True)
-TChallenge = TypeVar("TChallenge", bound=Challenge, covariant=True)
+TSession = TypeVar("TSession", bound=Session, covariant=True, default=Session)
+TChallenge = TypeVar("TChallenge", bound=Challenge, covariant=True, default=Challenge)
 
 
 class BaseAPI(ABC, Generic[TChallenge, TSession]):
