@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 
 from pydantic import BaseModel, ConfigDict
-from typing_extensions import Generic, TypeVar, overload
+from typing_extensions import Generic, Optional, TypeVar, overload
 
-from common.types import OptStr
-
+OptStr = Optional[str]
 
 class Challenge(BaseModel):
     id: str

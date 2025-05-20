@@ -1,8 +1,9 @@
 from redbot.core import commands
-from typing_extensions import Literal, overload
+from typing_extensions import Literal, Optional, overload
 
-from common.BaseAPI import BaseAPI
-from common.types import OptStr
+from .BaseAPI import BaseAPI
+
+OptStr = Optional[str]
 
 
 class Platform(commands.Cog, name="ctfcogs.Platform"):
