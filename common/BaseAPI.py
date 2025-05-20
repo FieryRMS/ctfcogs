@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Generic, overload
 
 from pydantic import BaseModel, ConfigDict
-from typing_extensions import TypeVar
+from typing_extensions import Generic, TypeVar, overload
 
 from common.types import OptStr
 

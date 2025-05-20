@@ -1,6 +1,5 @@
-from typing import Literal, overload
-
 from redbot.core import commands
+from typing_extensions import Literal, overload
 
 from common.BaseAPI import BaseAPI
 from common.types import OptStr

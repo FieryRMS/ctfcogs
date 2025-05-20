@@ -1,3 +1,3 @@
-from typing import Optional
+from typing_extensions import Optional
 
 OptStr = Optional[str]
