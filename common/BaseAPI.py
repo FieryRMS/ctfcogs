@@ -27,8 +27,8 @@ TChallenge = TypeVar("TChallenge", bound=Challenge, covariant=True, default=Chal
 class BaseAPI(ABC, Generic[TChallenge, TSession]):
     """Base class API wrapper for ctf platforms"""
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def verify(cls, link: str) -> bool:
         """
         Verify this is the appropriate platform class for the given link
@@ -44,16 +44,16 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             True if this is the appropriate platform class for the given link
         """
 
-    @overload
     @classmethod
+    @overload
     def login(cls, *, uname: str, pwd: str) -> TSession: ...
 
-    @overload
     @classmethod
+    @overload
     def login(cls, *, token: str) -> TSession: ...
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def login(cls, *, uname: OptStr = None, pwd: OptStr = None, token: OptStr = None) -> TSession:
         """
         Login to the platform
@@ -73,8 +73,8 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             The session object for the platform
         """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def logout(cls, session: Session) -> None:
         """
         Logout of the platform
@@ -85,8 +85,8 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             The session object to logout
         """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def get_challenges(cls, session: Session) -> list[TChallenge]:
         """
         Get the challenges for this platform
@@ -102,8 +102,8 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             A list of challenges for this platform
         """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def get_challenge(cls, id: str, session: Session) -> TChallenge:
         """
         Get a specific challenge for this platform
@@ -121,8 +121,8 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             The challenge for this platform
         """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def submit_flag(cls, session: Session, challenge: Challenge, flag: str) -> bool:
         """
         Submit a flag for a specific challenge
@@ -142,8 +142,8 @@ class BaseAPI(ABC, Generic[TChallenge, TSession]):
             True if the flag was accepted, False otherwise
         """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def submit_flags(
         cls, session: Session, challenges: list[Challenge], flags: list[str]
     ) -> list[bool]:
