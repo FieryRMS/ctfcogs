@@ -7,4 +7,5 @@ class CTF(commands.Cog, name="ctfcogs.CTF"):
     """
 
     def __init__(self, bot: commands.Bot):
+        super().__init__()
         self.bot = bot

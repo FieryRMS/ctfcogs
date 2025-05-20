@@ -11,6 +11,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     APIS: list[type[BaseAPI]] = []
 
     def __init__(self, bot: commands.Bot):
+        super().__init__()
         self.bot = bot
 
     @commands.group()
