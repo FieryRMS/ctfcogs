@@ -14,7 +14,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
-        self.config = Config.get_conf(self, 4042795926)
+        self.config = Config.get_conf(self, 4042795926, force_registration=True)
 
     @commands.hybrid_group()
     async def platform(self, ctx: commands.Context):

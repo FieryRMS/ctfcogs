@@ -9,7 +9,7 @@ class CTF(commands.Cog, name="ctfcogs.CTF"):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
-        self.config = Config.get_conf(self, 3646819334)
+        self.config = Config.get_conf(self, 3646819334, force_registration=True)
 
     @commands.hybrid_group()
     async def ctf(self, ctx: commands.Context):
