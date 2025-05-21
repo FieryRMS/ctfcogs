@@ -231,7 +231,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         view.add_item(Yes)
         view.add_item(No)
         await ctx.send(
-            "Are you sure you want to delete this CTF? This action cannot be undone.",
+            "Are you sure you want to delete this CTF? This action cannot be undone. (10s)",
             view=view,
             ephemeral=True,
         )
