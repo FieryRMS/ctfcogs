@@ -111,7 +111,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         raise NotImplementedError()
 
     @platform.command()
-    async def logout(self, ctx: commands.Context, *, url: OptStr = None) -> None:
+    async def logout(self, ctx: commands.Context, url: OptStr = None) -> None:
         """
         Logout of the platform and delete the session
 
@@ -123,7 +123,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         raise NotImplementedError()
 
     @platform.command()
-    async def delete(self, ctx: commands.Context, *, url: OptStr = None) -> None:
+    async def delete(self, ctx: commands.Context, url: OptStr = None) -> None:
         """
         Delete the platform and all associated data
 
@@ -141,7 +141,6 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         show: Literal["all", "solved", "unsolved"] = "unsolved",
         sort: Literal["asc", "desc", "none"] = "desc",
         sortby: Literal["name", "points", "solves"] = "solves",
-        *,
         url: OptStr = None,
     ) -> None:
         r"""
@@ -183,7 +182,6 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         ctx: commands.Context,
         id: str,
         flag: str,
-        *,
         url: OptStr = None,
     ) -> None:
         """
@@ -205,7 +203,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         raise NotImplementedError()
 
     @platform.command()
-    async def submit(self, ctx: commands.Context, *, url: OptStr = None) -> None:
+    async def submit(self, ctx: commands.Context, url: OptStr = None) -> None:
         """
         Submit any saved flags for a given platform
 
