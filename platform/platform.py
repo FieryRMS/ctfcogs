@@ -1,4 +1,4 @@
-from redbot.core import commands
+from redbot.core import Config, commands
 from typing_extensions import Literal, Optional
 
 from .BaseAPI import BaseAPI
@@ -14,6 +14,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
+        self.config = Config.get_conf(self, 4042795926)
 
     @commands.hybrid_group()
     async def platform(self, ctx: commands.Context):

@@ -1,5 +1,5 @@
 from discord import Member, Role
-from redbot.core import commands
+from redbot.core import Config, commands
 
 
 class Forums(commands.Cog, name="ctfcogs.Forums"):
@@ -8,14 +8,16 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
+        self.config = Config.get_conf(self, 614565206)
 
+    @commands.guild_only()
     @commands.hybrid_group()
     async def forums(self, ctx: commands.Context):
         """Manage CTF forums and channels."""
         pass
 
     @forums.command()
-    async def create(self, ctx: commands.Context, contest: str) -> None:
+    async def create(self, ctx: commands.GuildContext, contest: str) -> None:
         """
         Create a new CTF channel and forum.
 

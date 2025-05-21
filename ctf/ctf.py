@@ -1,4 +1,4 @@
-from redbot.core import commands
+from redbot.core import Config, commands
 
 
 class CTF(commands.Cog, name="ctfcogs.CTF"):
@@ -9,6 +9,7 @@ class CTF(commands.Cog, name="ctfcogs.CTF"):
     def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
+        self.config = Config.get_conf(self, 3646819334)
 
     @commands.hybrid_group()
     async def ctf(self, ctx: commands.Context):
