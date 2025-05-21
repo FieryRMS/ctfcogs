@@ -134,7 +134,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         Parameters
         ----------
         chall: str
-            The name of the challenge to add to the channel and forum.
+            The name of the challenge to add to the CTF forums.
         """
         raise NotImplementedError()
 
@@ -147,9 +147,18 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         raise NotImplementedError()
 
     async def delete_channel_id(self, id: int):
+        """
+        Delete a channel by its ID.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the channel to delete.
+        """
         channel = self.bot.get_channel(id)
         if channel and not isinstance(channel, discord.abc.PrivateChannel):
             await channel.delete()
+        await self.config.channel_from_id(id).clear()
 
     async def delete_ctf(self, config: ForumChannelConfig):
         """
@@ -195,6 +204,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         async def yes_callback(interaction: Interaction):
             nonlocal self, config
             await self.delete_ctf(config)
+
             await interaction.response.edit_message(
                 content="CTF deleted.",
                 view=None,
