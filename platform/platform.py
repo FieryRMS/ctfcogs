@@ -1,5 +1,5 @@
 from redbot.core import commands
-from typing_extensions import Literal, Optional, overload
+from typing_extensions import Literal, Optional
 
 from .BaseAPI import BaseAPI
 
@@ -15,7 +15,7 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         super().__init__()
         self.bot = bot
 
-    @commands.group()
+    @commands.hybrid_group()
     async def platform(self, ctx: commands.Context):
         """
         Manage CTF Platforms
@@ -58,19 +58,10 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         """
         raise NotImplementedError()
 
-    @overload
-    async def creds(
-        self, ctx: commands.Context, *, uname: str, pwd: str, url: OptStr = None
-    ) -> None: ...
-
-    @overload
-    async def creds(self, ctx: commands.Context, *, token: str, url: OptStr = None) -> None: ...
-
     @platform.command()
     async def creds(
         self,
         ctx: commands.Context,
-        *,
         uname: OptStr = None,
         pwd: OptStr = None,
         token: OptStr = None,
@@ -92,22 +83,10 @@ class Platform(commands.Cog, name="ctfcogs.Platform"):
         """
         raise NotImplementedError()
 
-    @overload
-    async def login(
-        self, ctx: commands.Context, *, uname: str, pwd: str, url: OptStr = None
-    ) -> None: ...
-
-    @overload
-    async def login(self, ctx: commands.Context, *, token: str, url: OptStr = None) -> None: ...
-
-    @overload
-    async def login(self, ctx: commands.Context, *, url: OptStr = None) -> None: ...
-
     @platform.command()
     async def login(
         self,
         ctx: commands.Context,
-        *,
         uname: OptStr = None,
         pwd: OptStr = None,
         token: OptStr = None,

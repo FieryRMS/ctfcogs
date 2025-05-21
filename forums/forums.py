@@ -9,7 +9,7 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
         super().__init__()
         self.bot = bot
 
-    @commands.group()
+    @commands.hybrid_group()
     async def forums(self, ctx: commands.Context):
         """Manage CTF forums and channels."""
         pass
