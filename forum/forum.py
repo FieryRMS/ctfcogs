@@ -1,10 +1,10 @@
 import asyncio
 
 import discord
-from discord import Guild, Interaction, Member, Role
-from discord.ui import Button, View
+from discord import Guild, Member, Role
 from pydantic import BaseModel
 from redbot.core import Config, commands
+from redbot.core.utils.views import ConfirmView
 from typing_extensions import Literal
 
 
@@ -201,40 +201,18 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
             )
             return
 
-        async def yes_callback(interaction: Interaction):
-            nonlocal self, config
-            await self.delete_ctf(config)
-
-            await interaction.response.edit_message(
-                content="CTF deleted.",
-                view=None,
-            )
-
-        async def no_callback(interaction: Interaction):
-            await interaction.response.edit_message(
-                content="CTF not deleted.",
-                view=None,
-            )
-
-        Yes: Button[View] = Button(
-            label="Yes",
-            style=discord.ButtonStyle.danger,
-        )
-        No: Button[View] = Button(
-            label="No",
-            style=discord.ButtonStyle.success,
-        )
-
-        Yes.callback = yes_callback
-        No.callback = no_callback
-        view = discord.ui.View(timeout=10)
-        view.add_item(Yes)
-        view.add_item(No)
-        await ctx.send(
-            "Are you sure you want to delete this CTF? This action cannot be undone. (10s)",
+        view = ConfirmView(ctx.author, timeout=10)
+        view.message = await ctx.send(
+            "Are you sure you want to delete this CTF? This action cannot be undone! (10s)",
             view=view,
             ephemeral=True,
         )
+        await view.wait()
+        if view.result:
+            await self.delete_ctf(config)
+            await view.message.edit(content="CTF deleted")
+        else:
+            await view.message.edit(content="CTF not deleted")
 
     @forum.command()
     async def join(self, ctx: commands.GuildContext, entity: Member | Role) -> None:
