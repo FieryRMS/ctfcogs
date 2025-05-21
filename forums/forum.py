@@ -24,7 +24,7 @@ class ForumChannelConfig(BaseModel):
     is_thread: bool = False
 
 
-class Forums(commands.Cog, name="ctfcogs.Forums"):
+class Forum(commands.Cog, name="ctfcogs.Forum"):
     """A cog for creating and managing CTF channels and forums."""
 
     def __init__(self, bot: commands.Bot):
