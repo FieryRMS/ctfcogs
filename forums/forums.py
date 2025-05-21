@@ -1,7 +1,8 @@
 import asyncio
 
 import discord
-from discord import Guild, Member, Role
+from discord import Guild, Interaction, Member, Role
+from discord.ui import Button, View
 from pydantic import BaseModel
 from redbot.core import Config, commands
 from typing_extensions import Literal
@@ -145,16 +146,85 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
         """
         raise NotImplementedError()
 
+    async def delete_channel_id(self, id: int):
+        channel = self.bot.get_channel(id)
+        if channel and not isinstance(channel, discord.abc.PrivateChannel):
+            await channel.delete()
+
+    async def delete_ctf(self, config: ForumChannelConfig):
+        """
+        Delete all the category, channels, forums that is part of the CTF.
+
+        Parameters
+        ----------
+        channel: discord.abc.GuildChannel
+            The channel of the CTF to delete.
+        """
+
+        if config.is_ctf:
+            asyncio.gather(
+                *[
+                    self.delete_channel_id(id)
+                    for id in (config.category_id, config.general_id, config.forum_id)
+                    if id is not None
+                ]
+            )
+
     @forums.command()
     async def delete(
         self,
-        ctx: commands.Context,
+        ctx: commands.GuildContext,
     ) -> None:
         """
         Delete the current challenge. If run in the general channel, it will delete the entire CTF.
         This command should be run in the channel that you want to delete.
         """
-        raise NotImplementedError()
+
+        config = ForumChannelConfig.model_validate(await self.config.channel(ctx.channel).all())
+
+        if not config.is_ctf:
+            await ctx.send("This command can only be run in a CTF channel.", ephemeral=True)
+            return
+
+        if config.general_id != ctx.channel.id:
+            await ctx.send(
+                "This command can only be run in the general channel of the CTF.", ephemeral=True
+            )
+            return
+
+        async def yes_callback(interaction: Interaction):
+            nonlocal self, config
+            await self.delete_ctf(config)
+            await interaction.response.edit_message(
+                content="CTF deleted.",
+                view=None,
+            )
+
+        async def no_callback(interaction: Interaction):
+            await interaction.response.edit_message(
+                content="CTF not deleted.",
+                view=None,
+            )
+
+        Yes: Button[View] = Button(
+            label="Yes",
+            style=discord.ButtonStyle.danger,
+        )
+        No: Button[View] = Button(
+            label="No",
+            style=discord.ButtonStyle.success,
+        )
+
+        Yes.callback = yes_callback
+        No.callback = no_callback
+        view = discord.ui.View(timeout=10)
+        view.add_item(Yes)
+        view.add_item(No)
+        await ctx.send(
+            "Are you sure you want to delete this CTF? This action cannot be undone.",
+            view=view,
+            ephemeral=True,
+        )
 
     @forums.command()
     async def join(self, ctx: commands.GuildContext, entity: Member | Role) -> None:

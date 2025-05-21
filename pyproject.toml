@@ -9,7 +9,6 @@ requires-python = "<3.12,>=3.9"
 dependencies = [
     "red-discordbot (>=3.5.20,<4.0.0)",
     "pydantic (>=2.11.4,<3.0.0)",
-    "typing-extensions (>=4.13.2,<5.0.0)",
 ]
 
 
