@@ -5,7 +5,7 @@ from discord import Guild, Member, Role
 from pydantic import BaseModel
 from redbot.core import Config, commands
 from redbot.core.utils.views import ConfirmView
-from typing_extensions import Literal
+from typing_extensions import Literal, overload
 
 
 class ForumGuildConfig(BaseModel):
@@ -40,23 +40,44 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         """Manage CTF forums and channels."""
         pass
 
-    async def get_divider(self, guild: Guild, divider: Literal["ctf", "archive"]):
+    @overload
+    async def get_divider(
+        self, guild: Guild, divider: Literal["ctf", "archive"], create: Literal[True] = True
+    ) -> discord.CategoryChannel: ...
+
+    @overload
+    async def get_divider(
+        self, guild: Guild, divider: Literal["ctf", "archive"], create: Literal[False]
+    ) -> discord.CategoryChannel | None: ...
+
+    async def get_divider(
+        self, guild: Guild, divider: Literal["ctf", "archive"], create: bool = True
+    ):
         """
         Get the divider for the given type. Will create the divider if it doesn't exist.
 
         Parameters
         ----------
         divider: {"ctf", "archive"}
-            The type of divider to get.
+            The type of divider to get
+        create: bool, default=True
+            Whether to create the divider if it doesn't exist
         """
         id: int | None = await self.config.guild(guild).get_attr(f"{divider}_divider_id")()
 
-        if id is None or (category := guild.get_channel(id)) is None:
+        category = None
+
+        if create and (id is None or (category := guild.get_channel(id)) is None):
             position = discord.utils.MISSING
 
             if divider == "ctf":
-                archive_divider = await self.get_divider(guild, "archive")
-                position = archive_divider.position - 1
+                archive_divider = await self.get_divider(guild, "archive", create=False)
+                if archive_divider is not None:
+                    position = archive_divider.position - 1
+            elif divider == "archive":
+                ctf_divider = await self.get_divider(guild, "ctf", create=False)
+                if ctf_divider is not None:
+                    position = ctf_divider.position + 1
 
             name: str = await self.config.guild(guild).get_attr(f"{divider}_divider")()
             category = await guild.create_category(name=name, position=position)
