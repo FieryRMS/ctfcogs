@@ -36,7 +36,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
 
     @commands.guild_only()
     @commands.hybrid_group()
-    async def forums(self, ctx: commands.Context):
+    async def forum(self, ctx: commands.Context):
         """Manage CTF forums and channels."""
         pass
 
@@ -101,7 +101,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
 
         return category, general, forum
 
-    @forums.command()
+    @forum.command()
     async def new(self, ctx: commands.GuildContext, contest: str) -> None:
         """
         Create a new CTF channel and forum.
@@ -117,7 +117,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         else:
             await ctx.message.add_reaction("✅")
 
-    @forums.command()
+    @forum.command()
     async def archive(self, ctx: commands.GuildContext) -> None:
         """
         Archive the current CTF channel and forum.
@@ -125,7 +125,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         """
         raise NotImplementedError()
 
-    @forums.command()
+    @forum.command()
     async def add(self, ctx: commands.GuildContext, chall: str) -> None:
         """
         Add a challenge to the current CTF.
@@ -138,7 +138,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         """
         raise NotImplementedError()
 
-    @forums.command()
+    @forum.command()
     async def solve(self, ctx: commands.GuildContext) -> None:
         """
         Mark the current challenge as solved.
@@ -179,7 +179,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
                 ]
             )
 
-    @forums.command()
+    @forum.command()
     async def delete(
         self,
         ctx: commands.GuildContext,
@@ -236,7 +236,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
             ephemeral=True,
         )
 
-    @forums.command()
+    @forum.command()
     async def join(self, ctx: commands.GuildContext, entity: Member | Role) -> None:
         """
         Add member(s) to a CTF channel or forum.
@@ -249,7 +249,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         """
         raise NotImplementedError()
 
-    @forums.command()
+    @forum.command()
     async def leave(self, ctx: commands.GuildContext, entity: Member | Role | None = None) -> None:
         """
         Leave a CTF channel or forum.
@@ -262,7 +262,7 @@ class Forum(commands.Cog, name="ctfcogs.Forum"):
         """
         raise NotImplementedError()
 
-    @forums.command()
+    @forum.command()
     async def where(self, ctx: commands.GuildContext, chall: str) -> None:
         """
         Get the channel of a challenge.
