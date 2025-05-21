@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord import Guild, Member, Role
 from pydantic import BaseModel
@@ -13,6 +15,14 @@ class ForumGuildConfig(BaseModel):
     use_only_threads: bool = False
 
 
+class ForumChannelConfig(BaseModel):
+    is_ctf: bool = False
+    category_id: int | None = None
+    general_id: int | None = None
+    forum_id: int | None = None
+    is_thread: bool = False
+
+
 class Forums(commands.Cog, name="ctfcogs.Forums"):
     """A cog for creating and managing CTF channels and forums."""
 
@@ -21,6 +31,7 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
         self.bot = bot
         self.config = Config.get_conf(self, 614565206, force_registration=True)
         self.config.register_guild(**ForumGuildConfig().model_dump())
+        self.config.register_channel(**ForumChannelConfig().model_dump())
 
     @commands.guild_only()
     @commands.hybrid_group()
@@ -37,7 +48,7 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
         divider: {"ctf", "archive"}
             The type of divider to get.
         """
-        id = await self.config.guild(guild).get_attr(f"{divider}_divider_id")()
+        id: int | None = await self.config.guild(guild).get_attr(f"{divider}_divider_id")()
 
         if id is None or (category := guild.get_channel(id)) is None:
             position = discord.utils.MISSING
@@ -46,9 +57,9 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
                 archive_divider = await self.get_divider(guild, "archive")
                 position = archive_divider.position - 1
 
-            name = await self.config.guild(guild).get_attr(f"{divider}_divider")()
+            name: str = await self.config.guild(guild).get_attr(f"{divider}_divider")()
             category = await guild.create_category(name=name, position=position)
-            await self.config.guild(guild).get_attr(f"{divider}_divider_id").set(category.id)
+            await self.config.guild(guild).set_raw(f"{divider}_divider_id", value=category.id)
 
         return category
 
@@ -66,10 +77,26 @@ class Forums(commands.Cog, name="ctfcogs.Forums"):
         general = await category.create_text_channel(name="general")
 
         use_only_threads = await self.config.guild(guild).use_only_threads()
-        if use_only_threads or "COMMUNITY" not in guild.features:
-            return category, general, None
 
-        forum = await category.create_forum(name="discussion", position=general.position)
+        forum = None
+        if not use_only_threads and "COMMUNITY" in guild.features:
+            forum = await category.create_forum(name="discussion", position=general.position)
+
+        config = ForumChannelConfig(
+            is_ctf=True,
+            category_id=category.id,
+            general_id=general.id,
+            forum_id=forum.id if forum else None,
+            is_thread=forum is None,
+        ).model_dump()
+
+        await asyncio.gather(
+            *[
+                self.config.channel(channel).set(config)
+                for channel in (category, general, forum)
+                if channel is not None
+            ]
+        )
 
         return category, general, forum
 
